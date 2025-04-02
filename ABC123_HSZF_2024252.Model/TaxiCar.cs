@@ -1,4 +1,7 @@
-namespace CarSharingHub_ABC123_HSZF_2024252.Model
+﻿using System;
+using System.Collections.Generic;
+
+namespace ABC123_HSZF_2024252.Model
 {
     public class TaxiCar
     {
@@ -6,15 +9,13 @@ namespace CarSharingHub_ABC123_HSZF_2024252.Model
         public string LicensePlate { get; set; }
         public string Driver { get; set; }
 
-        // New property
-        public string VehicleType { get; set; } = "Standard";
-
-        // Another new property
+        // Example property
         public DateTime LastServiceDate { get; set; } = DateTime.UtcNow;
 
-        // Example computed property or method
-        public bool IsMaintenanceNeeded => (DateTime.UtcNow - LastServiceDate).TotalDays > 90;
-
+        // Navigation property: One car, many fares
         public virtual ICollection<Fare> Fares { get; set; } = new List<Fare>();
+
+        // Simple helper
+        public bool IsMaintenanceOverdue => (DateTime.UtcNow - LastServiceDate).TotalDays > 90;
     }
 }
