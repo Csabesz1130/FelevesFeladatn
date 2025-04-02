@@ -1,0 +1,31 @@
+# Ignore Visual Studio cache and workspace files
+.vs/
+.vscode/
+
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Ignore Rider / JetBrains
+.idea/
+*.sln.iml
+
+# Ignore coverage / test result directories
+TestResults/
+coverage/
+
+# Ignore logs
+*.log
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore other ephemeral files
+*.swp
+*.swo
