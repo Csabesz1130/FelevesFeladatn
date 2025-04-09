@@ -1,0 +1,17 @@
+<TaxiCars>
+  <TaxiCar>
+    <LicensePlate>ABC-123</LicensePlate>
+    <Driver>John Doe</Driver>
+    <Fares>
+      <Fare>
+        <From>A</From>
+        <To>B</To>
+        <Distance>50</Distance>
+        <PaidAmount>150.0</PaidAmount>
+        <FareStartDate>2024-05-01T10:00:00</FareStartDate>
+      </Fare>
+      <!-- tobbi... -->
+    </Fares>
+  </TaxiCar>
+  <!-- tobbi... -->
+</TaxiCars>
