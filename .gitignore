@@ -29,3 +29,4 @@ coverage/
 # Ignore other ephemeral files
 *.swp
 *.swo
+.qodo
