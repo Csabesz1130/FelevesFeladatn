@@ -55,12 +55,12 @@ namespace ABC123_HSZF_2024252.Application.Services
         {
             var car = await GetCarByLicensePlateAsync(licensePlate);
             if (car == null)
-                throw new Exception($""Car not found: {licensePlate}"");
+                throw new Exception($"Car not found: {licensePlate}");
 
             // Example: if PaidAmount > some threshold, notify
             if (fare.PaidAmount > 9999)
             {
-                notification?.Invoke($""Warning: a very expensive fare was added!"");
+                notification?.Invoke($"Warning: a very expensive fare was added!");
             }
 
             car.Fares.Add(fare);
