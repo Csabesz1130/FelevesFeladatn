@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ABC123_HSZF_2024252.Model
+namespace BRK0Y5_HSZF_2024252.Model
 {
     /// <summary>
     /// Data Transfer Object for importing TaxiCar data from JSON/XML.

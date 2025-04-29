@@ -1,9 +1,9 @@
-﻿using ABC123_HSZF_2024252.Model;
+﻿using BRK0Y5_HSZF_2024252.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ABC123_HSZF_2024252.Application.Interfaces
+namespace BRK0Y5_HSZF_2024252.Application.Interfaces
 {
     public interface ICarManagementService
     {

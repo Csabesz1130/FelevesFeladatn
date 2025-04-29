@@ -1,17 +1,17 @@
 # create-persistence-files.ps1
 # =============================
-# This script creates the "ABC123_HSZF_2024252.Persistence.MsSql" folder (if needed)
+# This script creates the "BRK0Y5_HSZF_2024252.Persistence.MsSql" folder (if needed)
 # and adds TaxiDbContext.cs and TaxiDbContextFactory.cs with sample EF Core content.
 
 Write-Host "Creating persistence folder if it does not exist..."
-New-Item -ItemType Directory -Force -Path ".\ABC123_HSZF_2024252.Persistence.MsSql" | Out-Null
+New-Item -ItemType Directory -Force -Path ".\BRK0Y5_HSZF_2024252.Persistence.MsSql" | Out-Null
 
 Write-Host "Generating TaxiDbContext.cs..."
 @"
 using Microsoft.EntityFrameworkCore;
-using ABC123_HSZF_2024252.Model;
+using BRK0Y5_HSZF_2024252.Model;
 
-namespace ABC123_HSZF_2024252.Persistence.MsSql
+namespace BRK0Y5_HSZF_2024252.Persistence.MsSql
 {
     public class TaxiDbContext : DbContext
     {
@@ -52,14 +52,14 @@ namespace ABC123_HSZF_2024252.Persistence.MsSql
         }
     }
 }
-"@ | Set-Content .\ABC123_HSZF_2024252.Persistence.MsSql\TaxiDbContext.cs -Encoding UTF8
+"@ | Set-Content .\BRK0Y5_HSZF_2024252.Persistence.MsSql\TaxiDbContext.cs -Encoding UTF8
 
 Write-Host "Generating TaxiDbContextFactory.cs..."
 @"
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace ABC123_HSZF_2024252.Persistence.MsSql
+namespace BRK0Y5_HSZF_2024252.Persistence.MsSql
 {
     // Used for applying EF Core migrations at design time.
     public class TaxiDbContextFactory : IDesignTimeDbContextFactory<TaxiDbContext>
@@ -73,6 +73,6 @@ namespace ABC123_HSZF_2024252.Persistence.MsSql
         }
     }
 }
-"@ | Set-Content .\ABC123_HSZF_2024252.Persistence.MsSql\TaxiDbContextFactory.cs -Encoding UTF8
+"@ | Set-Content .\BRK0Y5_HSZF_2024252.Persistence.MsSql\TaxiDbContextFactory.cs -Encoding UTF8
 
 Write-Host "Persistence files have been created!"

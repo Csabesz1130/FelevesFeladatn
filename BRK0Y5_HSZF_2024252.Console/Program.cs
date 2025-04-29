@@ -1,10 +1,10 @@
-﻿using ABC123_HSZF_2024252.Application.Interfaces;
-using ABC123_HSZF_2024252.Application.Services;
-using ABC123_HSZF_2024252.Persistence.MsSql;
+﻿using BRK0Y5_HSZF_2024252.Application.Interfaces;
+using BRK0Y5_HSZF_2024252.Application.Services;
+using BRK0Y5_HSZF_2024252.Persistence.MsSql;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using ABC123_HSZF_2024252.Model;
+using BRK0Y5_HSZF_2024252.Model;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -14,44 +14,56 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        // Build a Host that includes configuration, logging, and DI (dependency injection).
-        var host = Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((hostingContext, config) =>
-            {
-                // Load appsettings.json, if present
-                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            })
-            .ConfigureLogging((hostingContext, logging) =>
-            {
-                // Configure the logging system
-                logging.ClearProviders();
-                logging.AddConsole();
-                logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-            })
-            .ConfigureServices((context, services) =>
-            {
-                // Register the DbContext with SQLite, enabling lazy loading if you want
-                services.AddDbContext<TaxiDbContext>(options =>
-                    options.UseSqlite("Data Source=TaxiDatabase.db")
-                           .UseLazyLoadingProxies()
-                );
-
-                // Register application services
-                services.AddScoped<ICarManagementService, CarManagementService>();
-                services.AddScoped<IDataImporterService, DataImporterService>();
-                services.AddScoped<IStatisticsService, StatisticsService>();
-            })
-            .Build();
-
-        // Apply migrations on startup
-        using (var scope = host.Services.CreateScope())
+        try
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<TaxiDbContext>();
-            dbContext.Database.Migrate();
-        }
+            Console.WriteLine("Starting Taxi Management System...");
+            // Build a Host that includes configuration, logging, and DI (dependency injection).
+            var host = Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    // Load appsettings.json, if present
+                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                })
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    // Configure the logging system
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    // Register the DbContext with SQLite, enabling lazy loading if you want
+                    services.AddDbContext<TaxiDbContext>(options =>
+                        options.UseSqlite("Data Source=TaxiDatabase.db")
+                               .UseLazyLoadingProxies()
+                    );
 
-        // Run the main menu loop
-        await RunApplicationAsync(host.Services);
+                    // Register application services
+                    services.AddScoped<ICarManagementService, CarManagementService>();
+                    services.AddScoped<IDataImporterService, DataImporterService>();
+                    services.AddScoped<IStatisticsService, StatisticsService>();
+                })
+                .Build();
+
+            Console.WriteLine("Applying database migrations...");
+            // Apply migrations on startup
+            using (var scope = host.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<TaxiDbContext>();
+                dbContext.Database.Migrate();
+            }
+
+            // Run the main menu loop
+            await RunApplicationAsync(host.Services);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR: An unhandled exception occurred: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            Console.WriteLine("\nPress any key to exit...");
+            Console.ReadKey();
+        }
     }
 
     /// <summary>
@@ -59,61 +71,74 @@ class Program
     /// </summary>
     static async Task RunApplicationAsync(IServiceProvider services)
     {
-        var dataImporter = services.GetRequiredService<IDataImporterService>();
-        var carManager = services.GetRequiredService<ICarManagementService>();
-        var statisticsService = services.GetRequiredService<IStatisticsService>();
-
-        bool exit = false;
-        while (!exit)
+        try
         {
-            Console.WriteLine("\n------------------------");
-            Console.WriteLine("Taxi Management System");
-            Console.WriteLine("1. Import JSON file");
-            Console.WriteLine("2. List cars");
-            Console.WriteLine("3. Add new car");
-            Console.WriteLine("4. Update car");
-            Console.WriteLine("5. Delete car");
-            Console.WriteLine("6. Add fare/trip");
-            Console.WriteLine("7. Generate statistics");
-            Console.WriteLine("8. Exit");
-            Console.WriteLine("9. (Optional) Export cars to CSV");
-            Console.WriteLine("------------------------");
-            Console.Write("Choose an option: ");
+            var dataImporter = services.GetRequiredService<IDataImporterService>();
+            var carManager = services.GetRequiredService<ICarManagementService>();
+            var statisticsService = services.GetRequiredService<IStatisticsService>();
 
-            var input = Console.ReadLine();
-            switch (input)
+            bool exit = false;
+            while (!exit)
             {
-                case "1":
-                    await ImportJsonAsync(dataImporter);
-                    break;
-                case "2":
-                    await ListCarsAsync(carManager);
-                    break;
-                case "3":
-                    await AddCarAsync(carManager);
-                    break;
-                case "4":
-                    await UpdateCarAsync(carManager);
-                    break;
-                case "5":
-                    await DeleteCarAsync(carManager);
-                    break;
-                case "6":
-                    await AddFareAsync(carManager);
-                    break;
-                case "7":
-                    await GenerateStatisticsAsync(statisticsService);
-                    break;
-                case "8":
-                    exit = true;
-                    break;
-                case "9":
-                    await ExportCarsToCsvAsync(carManager);
-                    break;
-                default:
-                    Console.WriteLine("Invalid option.");
-                    break;
+                Console.WriteLine("\n------------------------");
+                Console.WriteLine("Taxi Management System");
+                Console.WriteLine("1. Import JSON file");
+                Console.WriteLine("2. List cars");
+                Console.WriteLine("3. Add new car");
+                Console.WriteLine("4. Update car");
+                Console.WriteLine("5. Delete car");
+                Console.WriteLine("6. Add fare/trip");
+                Console.WriteLine("7. Generate statistics");
+                Console.WriteLine("8. Exit");
+                Console.WriteLine("9. (Optional) Export cars to CSV");
+                Console.WriteLine("------------------------");
+                Console.Write("Choose an option: ");
+
+                var input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        await ImportJsonAsync(dataImporter);
+                        break;
+                    case "2":
+                        await ListCarsAsync(carManager);
+                        break;
+                    case "3":
+                        await AddCarAsync(carManager);
+                        break;
+                    case "4":
+                        await UpdateCarAsync(carManager);
+                        break;
+                    case "5":
+                        await DeleteCarAsync(carManager);
+                        break;
+                    case "6":
+                        await AddFareAsync(carManager);
+                        break;
+                    case "7":
+                        await GenerateStatisticsAsync(statisticsService);
+                        break;
+                    case "8":
+                        exit = true;
+                        break;
+                    case "9":
+                        await ExportCarsToCsvAsync(carManager);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option.");
+                        break;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR: An exception occurred in the application: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+        }
+        finally
+        {
+            Console.WriteLine("\nApplication closed. Press any key to exit...");
+            Console.ReadKey();
         }
     }
 

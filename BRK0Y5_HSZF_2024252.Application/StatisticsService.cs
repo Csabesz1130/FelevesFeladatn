@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ABC123_HSZF_2024252.Application.Interfaces;
-using ABC123_HSZF_2024252.Model;
-using ABC123_HSZF_2024252.Persistence.MsSql;
+using BRK0Y5_HSZF_2024252.Application.Interfaces;
+using BRK0Y5_HSZF_2024252.Model;
+using BRK0Y5_HSZF_2024252.Persistence.MsSql;
 
-namespace ABC123_HSZF_2024252.Application.Services
+namespace BRK0Y5_HSZF_2024252.Application.Services
 {
     /// <summary>
     /// Generates simple statistics about taxis/fare data:

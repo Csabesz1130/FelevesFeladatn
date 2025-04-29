@@ -1,17 +1,17 @@
 # create-model-files.ps1
 # =========================================
-# This script creates the "ABC123_HSZF_2024252.Model" folder (if needed)
+# This script creates the "BRK0Y5_HSZF_2024252.Model" folder (if needed)
 # and adds TaxiCar.cs and Fare.cs with sample content.
 
 Write-Host "Creating model folder if it does not exist..."
-New-Item -ItemType Directory -Force -Path ".\ABC123_HSZF_2024252.Model" | Out-Null
+New-Item -ItemType Directory -Force -Path ".\BRK0Y5_HSZF_2024252.Model" | Out-Null
 
 Write-Host "Generating TaxiCar.cs..."
 @"
 using System;
 using System.Collections.Generic;
 
-namespace ABC123_HSZF_2024252.Model
+namespace BRK0Y5_HSZF_2024252.Model
 {
     public class TaxiCar
     {
@@ -29,13 +29,13 @@ namespace ABC123_HSZF_2024252.Model
         public bool IsMaintenanceOverdue => (DateTime.UtcNow - LastServiceDate).TotalDays > 90;
     }
 }
-"@ | Set-Content .\ABC123_HSZF_2024252.Model\TaxiCar.cs -Encoding UTF8
+"@ | Set-Content .\BRK0Y5_HSZF_2024252.Model\TaxiCar.cs -Encoding UTF8
 
 Write-Host "Generating Fare.cs..."
 @"
 using System;
 
-namespace ABC123_HSZF_2024252.Model
+namespace BRK0Y5_HSZF_2024252.Model
 {
     public class Fare
     {
@@ -54,6 +54,6 @@ namespace ABC123_HSZF_2024252.Model
         public bool IsLongTrip => Distance > 100;
     }
 }
-"@ | Set-Content .\ABC123_HSZF_2024252.Model\Fare.cs -Encoding UTF8
+"@ | Set-Content .\BRK0Y5_HSZF_2024252.Model\Fare.cs -Encoding UTF8
 
 Write-Host "Model files have been created!"

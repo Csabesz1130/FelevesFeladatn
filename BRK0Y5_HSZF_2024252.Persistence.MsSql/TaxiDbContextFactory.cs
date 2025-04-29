@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace ABC123_HSZF_2024252.Persistence.MsSql
+namespace BRK0Y5_HSZF_2024252.Persistence.MsSql
 {
     // Used for applying EF Core migrations at design time.
     public class TaxiDbContextFactory : IDesignTimeDbContextFactory<TaxiDbContext>

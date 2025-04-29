@@ -2,18 +2,18 @@
 
 # create-model-files.sh
 # =========================================
-# Creates the "ABC123_HSZF_2024252.Model" directory and generates
+# Creates the "BRK0Y5_HSZF_2024252.Model" directory and generates
 # TaxiCar.cs and Fare.cs with sample content.
 
 echo "Creating model folder if it does not exist..."
-mkdir -p ABC123_HSZF_2024252.Model
+mkdir -p BRK0Y5_HSZF_2024252.Model
 
 echo "Generating TaxiCar.cs..."
-cat <<EOF > ABC123_HSZF_2024252.Model/TaxiCar.cs
+cat <<EOF > BRK0Y5_HSZF_2024252.Model/TaxiCar.cs
 using System;
 using System.Collections.Generic;
 
-namespace ABC123_HSZF_2024252.Model
+namespace BRK0Y5_HSZF_2024252.Model
 {
     public class TaxiCar
     {
@@ -34,10 +34,10 @@ namespace ABC123_HSZF_2024252.Model
 EOF
 
 echo "Generating Fare.cs..."
-cat <<EOF > ABC123_HSZF_2024252.Model/Fare.cs
+cat <<EOF > BRK0Y5_HSZF_2024252.Model/Fare.cs
 using System;
 
-namespace ABC123_HSZF_2024252.Model
+namespace BRK0Y5_HSZF_2024252.Model
 {
     public class Fare
     {

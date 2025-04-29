@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace ABC123_HSZF_2024252.Application.Interfaces
+namespace BRK0Y5_HSZF_2024252.Application.Interfaces
 {
     /// <summary>
     /// Defines methods for importing data (e.g. from JSON files).

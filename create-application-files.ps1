@@ -1,19 +1,19 @@
 # create-application-files.ps1
 # ============================
-# Creates the "ABC123_HSZF_2024252.Application" folder if needed
+# Creates the "BRK0Y5_HSZF_2024252.Application" folder if needed
 # and writes an interface + service with sample logic.
 
 Write-Host "Creating application folder if it does not exist..."
-New-Item -ItemType Directory -Force -Path ".\ABC123_HSZF_2024252.Application" | Out-Null
+New-Item -ItemType Directory -Force -Path ".\BRK0Y5_HSZF_2024252.Application" | Out-Null
 
 Write-Host "Generating ICarManagementService.cs..."
 @"
-using ABC123_HSZF_2024252.Model;
+using BRK0Y5_HSZF_2024252.Model;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ABC123_HSZF_2024252.Application.Interfaces
+namespace BRK0Y5_HSZF_2024252.Application.Interfaces
 {
     public interface ICarManagementService
     {
@@ -30,7 +30,7 @@ namespace ABC123_HSZF_2024252.Application.Interfaces
         Task<List<TaxiCar>> SearchCarsAsync(string licensePlate = null, string driver = null);
     }
 }
-"@ | Set-Content .\ABC123_HSZF_2024252.Application\ICarManagementService.cs -Encoding UTF8
+"@ | Set-Content .\BRK0Y5_HSZF_2024252.Application\ICarManagementService.cs -Encoding UTF8
 
 Write-Host "Generating CarManagementService.cs..."
 @"
@@ -39,11 +39,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ABC123_HSZF_2024252.Model;
-using ABC123_HSZF_2024252.Application.Interfaces;
-using ABC123_HSZF_2024252.Persistence.MsSql;
+using BRK0Y5_HSZF_2024252.Model;
+using BRK0Y5_HSZF_2024252.Application.Interfaces;
+using BRK0Y5_HSZF_2024252.Persistence.MsSql;
 
-namespace ABC123_HSZF_2024252.Application.Services
+namespace BRK0Y5_HSZF_2024252.Application.Services
 {
     public class CarManagementService : ICarManagementService
     {
@@ -123,6 +123,6 @@ namespace ABC123_HSZF_2024252.Application.Services
         }
     }
 }
-"@ | Set-Content .\ABC123_HSZF_2024252.Application\CarManagementService.cs -Encoding UTF8
+"@ | Set-Content .\BRK0Y5_HSZF_2024252.Application\CarManagementService.cs -Encoding UTF8
 
 Write-Host "Application files have been created!"

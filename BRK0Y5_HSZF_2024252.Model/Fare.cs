@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ABC123_HSZF_2024252.Model
+namespace BRK0Y5_HSZF_2024252.Model
 {
     public class Fare
     {

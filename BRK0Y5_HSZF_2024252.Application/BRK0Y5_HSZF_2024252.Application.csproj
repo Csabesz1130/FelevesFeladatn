@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\ABC123_HSZF_2024252.Model\ABC123_HSZF_2024252.Model.csproj" />
-    <ProjectReference Include="..\ABC123_HSZF_2024252.Persistence.MsSql\ABC123_HSZF_2024252.Persistence.MsSql.csproj" />
+    <ProjectReference Include="..\BRK0Y5_HSZF_2024252.Model\BRK0Y5_HSZF_2024252.Model.csproj" />
+    <ProjectReference Include="..\BRK0Y5_HSZF_2024252.Persistence.MsSql\BRK0Y5_HSZF_2024252.Persistence.MsSql.csproj" />
   </ItemGroup>
   
   <ItemGroup>

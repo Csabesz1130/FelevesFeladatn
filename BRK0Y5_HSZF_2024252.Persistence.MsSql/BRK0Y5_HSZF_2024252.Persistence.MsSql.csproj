@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ABC123_HSZF_2024252.Model\ABC123_HSZF_2024252.Model.csproj" />
+    <ProjectReference Include="..\BRK0Y5_HSZF_2024252.Model\BRK0Y5_HSZF_2024252.Model.csproj" />
   </ItemGroup>
 
 </Project>
