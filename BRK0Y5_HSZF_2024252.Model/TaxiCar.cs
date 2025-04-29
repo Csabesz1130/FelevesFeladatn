@@ -1,33 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace BRK0Y5_HSZF_2024252.Model
 {
     public class TaxiCar
     {
         public int Id { get; set; }
-        public string Model { get; set; } // Changed from LicensePlate to Model
-        public string Driver { get; set; } // Kept for backward compatibility
         
-        // New properties for car sharing
+        [XmlElement("Model")]
+        public string Model { get; set; }
+        
+        [XmlElement("LicensePlate")]
+        public string LicensePlate { get; set; }
+        
+        [XmlElement("Driver")]
+        public string Driver { get; set; }
+        
+        [XmlElement("TotalDistance")]
         public double TotalDistance { get; set; }
+        
+        [XmlElement("DistanceSinceLastMaintenance")]
         public double DistanceSinceLastMaintenance { get; set; }
 
-        // Navigation property: One car, many trips (renamed from Fares)
+        // Service date from original model
+        public DateTime LastServiceDate { get; set; } = DateTime.UtcNow;
+
+        // Navigation property: One car, many fares/trips
+        [XmlIgnore]
         public virtual ICollection<Fare> Fares { get; set; } = new List<Fare>();
 
-        // Business logic for car sharing
-        public bool NeedsMaintenance => DistanceSinceLastMaintenance >= 200.0;
+        // Maintenance check properties
+        [XmlIgnore]
+        public bool NeedsMaintenance => DistanceSinceLastMaintenance >= 200;
         
-        public bool RequestRandomMaintenance()
-        {
-            // 20% chance of requesting maintenance
-            return new Random().NextDouble() < 0.2;
-        }
-        
-        public void ResetMaintenanceCounter()
-        {
-            DistanceSinceLastMaintenance = 0;
-        }
+        [XmlIgnore]
+        public bool IsMaintenanceOverdue => (DateTime.UtcNow - LastServiceDate).TotalDays > 90;
     }
 }

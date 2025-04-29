@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CarSharing>
+  <Cars>
+    <Car>
+      <Id>1</Id>
+      <Model>Toyota Corolla</Model>
+      <TotalDistance>3689.0</TotalDistance>
+      <DistanceSinceLastMaintenance>24.5</DistanceSinceLastMaintenance>
+    </Car>
+    <Car>
+      <Id>2</Id>
+      <Model>Honda Civic</Model>
+      <TotalDistance>324.2</TotalDistance>
+      <DistanceSinceLastMaintenance>11.0</DistanceSinceLastMaintenance>
+    </Car>
+    <Car>
+      <Id>3</Id>
+      <Model>Ford Focus</Model>
+      <TotalDistance>1234.5</TotalDistance>
+      <DistanceSinceLastMaintenance>198.7</DistanceSinceLastMaintenance>
+    </Car>
+  </Cars>
+  <Customers>
+    <Customer>
+      <Id>1</Id>
+      <n>John Doe</n>
+      <Balance>150.0</Balance>
+    </Customer>
+    <Customer>
+      <Id>2</Id>
+      <n>Jane Smith</n>
+      <Balance>200.0</Balance>
+    </Customer>
+    <Customer>
+      <Id>3</Id>
+      <n>Alice Johnson</n>
+      <Balance>300.0</Balance>
+    </Customer>
+  </Customers>
+  <Trips>
+    <Trip>
+      <Id>1</Id>
+      <CarId>1</CarId>
+      <CustomerId>1</CustomerId>
+      <Distance>100.0</Distance>
+      <Cost>35.5</Cost>
+    </Trip>
+    <Trip>
+      <Id>2</Id>
+      <CarId>2</CarId>
+      <CustomerId>2</CustomerId>
+      <Distance>150.0</Distance>
+      <Cost>53.0</Cost>
+    </Trip>
+    <Trip>
+      <Id>3</Id>
+      <CarId>3</CarId>
+      <CustomerId>3</CustomerId>
+      <Distance>200.0</Distance>
+      <Cost>70.5</Cost>
+    </Trip>
+  </Trips>
+</CarSharing>

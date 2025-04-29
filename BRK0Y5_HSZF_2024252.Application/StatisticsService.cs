@@ -12,10 +12,8 @@ using BRK0Y5_HSZF_2024252.Persistence.MsSql;
 namespace BRK0Y5_HSZF_2024252.Application.Services
 {
     /// <summary>
-    /// Generates simple statistics about taxis/fare data:
-    ///  - Short trips, average distance,
-    ///  - The longest trip, etc.
-    /// Writes the results to "TaxiStatistics.txt".
+    /// Generates statistics about taxi cars, fares, and car sharing data.
+    /// Writes the results to "TaxiStatistics.txt" and "CarSharingStatistics.txt".
     /// </summary>
     public class StatisticsService : IStatisticsService
     {
@@ -27,6 +25,13 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         }
 
         public async Task GenerateStatisticsAsync()
+        {
+            // Run both stats generators
+            await GenerateTaxiStatisticsAsync();
+            await GenerateCarSharingStatisticsAsync();
+        }
+
+        private async Task GenerateTaxiStatisticsAsync()
         {
             // Load all cars with their Fares
             var cars = await _context.TaxiCars
@@ -67,7 +72,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             if (longestFare != null)
             {
                 sb.AppendLine($"Longest Fare: {longestFare.From} -> {longestFare.To}, " +
-                    $"Distance={longestFare.Distance} km, CarId={longestFare.TaxiCarId}");
+                    $"Distance={longestFare.Distance} km, CarId={longestFare.CarId}");
             }
             else
             {
@@ -80,6 +85,86 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             // Also print the summary to console
             Console.WriteLine(sb.ToString());
             Console.WriteLine("Statistics saved to TaxiStatistics.txt");
+        }
+
+        private async Task GenerateCarSharingStatisticsAsync()
+        {
+            // Load all cars with their Fares
+            var cars = await _context.TaxiCars
+                .Include(c => c.Fares)
+                .ToListAsync();
+
+            // Load all customers
+            var customers = await _context.Customers
+                .ToListAsync();
+
+            // Build a text report
+            var sb = new StringBuilder();
+            sb.AppendLine("=== Car Sharing Statistics ===");
+            sb.AppendLine($"Report Date: {DateTime.Now}");
+            sb.AppendLine();
+
+            // Most used car
+            var mostUsedCar = cars.OrderByDescending(c => c.TotalDistance).FirstOrDefault();
+            if (mostUsedCar != null)
+            {
+                sb.AppendLine($"Most Used Car: {mostUsedCar.Model} (ID: {mostUsedCar.Id}, License: {mostUsedCar.LicensePlate})");
+                sb.AppendLine($"Total Distance: {mostUsedCar.TotalDistance:F2} km");
+                sb.AppendLine();
+            }
+
+            // Average car distance
+            double avgCarDistance = cars.Any() ? cars.Average(c => c.TotalDistance) : 0;
+            sb.AppendLine($"Average Car Distance: {avgCarDistance:F2} km");
+            sb.AppendLine();
+
+            // Cars needing maintenance
+            var carsNeedingMaintenance = cars.Where(c => c.NeedsMaintenance).ToList();
+            sb.AppendLine($"Cars Needing Maintenance: {carsNeedingMaintenance.Count}");
+            foreach (var car in carsNeedingMaintenance)
+            {
+                sb.AppendLine($"  {car.Model} (ID: {car.Id}, License: {car.LicensePlate}): {car.DistanceSinceLastMaintenance:F2} km since last maintenance");
+            }
+            sb.AppendLine();
+
+            // Top paying customers
+            var topCustomers = (from fare in _context.Fares
+                              group fare by fare.CustomerId into g
+                              select new { 
+                                  CustomerId = g.Key, 
+                                  TotalSpent = g.Sum(f => f.PaidAmount) 
+                              })
+                              .OrderByDescending(x => x.TotalSpent)
+                              .Take(10)
+                              .ToList();
+
+            sb.AppendLine("Top Paying Customers:");
+            int rank = 1;
+            foreach (var customerSpending in topCustomers)
+            {
+                var customer = customers.FirstOrDefault(c => c.Id == customerSpending.CustomerId);
+                if (customer != null)
+                {
+                    sb.AppendLine($"  {rank}. {customer.Name} (ID: {customer.Id}): {customerSpending.TotalSpent:F2}€");
+                    rank++;
+                }
+            }
+            sb.AppendLine();
+
+            // Customers with insufficient funds
+            var customersWithInsufficientFunds = customers.Where(c => c.Balance < 40).ToList();
+            sb.AppendLine("Customers with Insufficient Funds (< 40€):");
+            foreach (var customer in customersWithInsufficientFunds)
+            {
+                sb.AppendLine($"  {customer.Name} (ID: {customer.Id}): {customer.Balance:F2}€");
+            }
+
+            // Write to "CarSharingStatistics.txt"
+            File.WriteAllText("CarSharingStatistics.txt", sb.ToString());
+
+            // Also print the summary to console
+            Console.WriteLine(sb.ToString());
+            Console.WriteLine("Statistics saved to CarSharingStatistics.txt");
         }
     }
 }
