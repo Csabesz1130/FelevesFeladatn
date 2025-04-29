@@ -1,10 +1,10 @@
-﻿using ABC123_HSZF_2024251.Application.Interfaces;
-using ABC123_HSZF_2024251.Application.Services;
-using ABC123_HSZF_2024251.Persistence.MsSql;
+﻿using ABC123_HSZF_2024252.Application.Interfaces;
+using ABC123_HSZF_2024252.Application.Services;
+using ABC123_HSZF_2024252.Persistence.MsSql;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using ABC123_HSZF_2024251.Model;
+using ABC123_HSZF_2024252.Model;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
