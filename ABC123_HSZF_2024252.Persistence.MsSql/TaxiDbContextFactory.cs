@@ -9,7 +9,7 @@ namespace ABC123_HSZF_2024252.Persistence.MsSql
         public TaxiDbContext CreateDbContext(string[] args)
         {
             var builder = new DbContextOptionsBuilder<TaxiDbContext>();
-            builder.UseSqlite(""Data Source=TaxiDatabase.db"");
+            builder.UseSqlite("Data Source=TaxiDatabase.db");
 
             return new TaxiDbContext(builder.Options);
         }
