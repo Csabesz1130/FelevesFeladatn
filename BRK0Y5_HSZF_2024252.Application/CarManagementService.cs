@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,12 +17,12 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         private readonly TaxiDbContext _context;
         private readonly Random _random = new Random();
         
-        // Event delegates
+        
         public delegate void TripEventHandler(object sender, TripEventArgs e);
         public delegate void MaintenanceEventHandler(object sender, MaintenanceEventArgs e);
         public delegate void InsufficientFundsEventHandler(object sender, InsufficientFundsEventArgs e);
         
-        // Events
+        
         public event TripEventHandler TripStarted;
         public event TripEventHandler TripFinished;
         public event MaintenanceEventHandler MaintenanceRequested;
@@ -74,7 +74,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             if (car == null)
                 throw new Exception($"Car not found: {licensePlate}");
 
-            // Example: if PaidAmount > some threshold, notify
+            
             if (fare.PaidAmount > 9999)
             {
                 notification?.Invoke($"Warning: a very expensive fare was added!");
@@ -83,7 +83,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             car.Fares.Add(fare);
             await _context.SaveChangesAsync();
             
-            // Car sharing extension: Update car distance and check for maintenance
+            
             car.TotalDistance += fare.Distance;
             car.DistanceSinceLastMaintenance += fare.Distance;
             await _context.SaveChangesAsync();
@@ -124,14 +124,14 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             var car = await GetCarByLicensePlateAsync(licensePlate);
             if (car != null)
             {
-                // Reset maintenance counter
+                
                 car.DistanceSinceLastMaintenance = 0;
                 car.LastServiceDate = DateTime.UtcNow;
                 
                 _context.TaxiCars.Update(car);
                 await _context.SaveChangesAsync();
                 
-                // Trigger maintenance event
+                
                 MaintenanceRequested?.Invoke(this, new MaintenanceEventArgs 
                 { 
                     CarId = car.Id,
@@ -146,12 +146,12 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         {
             bool needsMaintenance = false;
             
-            // Mandatory maintenance check after 200 km
+            
             if (car.DistanceSinceLastMaintenance >= 200)
             {
                 needsMaintenance = true;
             }
-            // 20% chance for maintenance after each trip
+            
             else if (_random.Next(100) < 20)
             {
                 needsMaintenance = true;
@@ -211,18 +211,18 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
         public async Task<bool> StartTripAsync(string licensePlate, int customerId, double estimatedDistance)
         {
-            // Get car and customer
+            
             var car = await GetCarByLicensePlateAsync(licensePlate);
             var customer = await GetCustomerByIdAsync(customerId);
             
-            // Validate entities exist
+            
             if (car == null || customer == null)
                 return false;
             
-            // Check if customer has sufficient funds (minimum 40€)
+            
             if (customer.Balance < 40m)
             {
-                // Trigger insufficient funds event
+                
                 InsufficientFunds?.Invoke(this, new InsufficientFundsEventArgs
                 {
                     CustomerId = customer.Id,
@@ -234,10 +234,10 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 return false;
             }
             
-            // Calculate estimated cost
+            
             decimal estimatedCost = Fare.CalculateCost(estimatedDistance);
             
-            // Trigger trip started event
+            
             TripStarted?.Invoke(this, new TripEventArgs
             {
                 CarId = car.Id,
@@ -254,18 +254,18 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
         public async Task FinishTripAsync(string licensePlate, int customerId, double actualDistance)
         {
-            // Get car and customer
+            
             var car = await GetCarByLicensePlateAsync(licensePlate);
             var customer = await GetCustomerByIdAsync(customerId);
             
-            // Validate entities exist
+            
             if (car == null || customer == null)
                 return;
             
-            // Calculate actual cost
+            
             decimal actualCost = Fare.CalculateCost(actualDistance);
             
-            // Create new trip/fare
+            
             var fare = new Fare
             {
                 CarId = car.Id,
@@ -277,22 +277,22 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 FareStartDate = DateTime.UtcNow
             };
             
-            // Add fare to database
+            
             _context.Fares.Add(fare);
             
-            // Update customer balance (deduct cost)
+            
             customer.Balance -= actualCost;
             _context.Customers.Update(customer);
             
-            // Update car distance statistics
+            
             car.TotalDistance += actualDistance;
             car.DistanceSinceLastMaintenance += actualDistance;
             _context.TaxiCars.Update(car);
             
-            // Save all changes
+            
             await _context.SaveChangesAsync();
             
-            // Trigger trip finished event
+            
             TripFinished?.Invoke(this, new TripEventArgs
             {
                 CarId = car.Id,
@@ -304,7 +304,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 Cost = actualCost
             });
             
-            // Check for maintenance
+            
             await CheckForMaintenanceAsync(car);
         }
 
@@ -321,7 +321,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
         public async Task<List<Customer>> GetTopPayingCustomersAsync(int count = 10)
         {
-            // Join trips/fares to get total amount spent by each customer
+            
             var customerSpending = await _context.Fares
                 .GroupBy(t => t.CustomerId)
                 .Select(g => new 
@@ -333,7 +333,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 .Take(count)
                 .ToListAsync();
             
-            // Get the actual customer objects
+            
             var topCustomers = new List<Customer>();
             foreach (var spending in customerSpending)
             {
@@ -364,16 +364,16 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             var cars = await GetCarsAsync();
             var csv = new StringBuilder();
             
-            // Add header
+            
             csv.AppendLine("Id,LicensePlate,Model,Driver,TotalDistance,DistanceSinceLastMaintenance");
             
-            // Add data rows
+            
             foreach (var car in cars)
             {
                 csv.AppendLine($"{car.Id},{car.LicensePlate},{car.Model},{car.Driver},{car.TotalDistance},{car.DistanceSinceLastMaintenance}");
             }
             
-            // Write to file
+            
             await File.WriteAllTextAsync(filePath, csv.ToString());
         }
 
@@ -382,16 +382,16 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             var customers = await GetCustomersAsync();
             var csv = new StringBuilder();
             
-            // Add header
+            
             csv.AppendLine("Id,Name,Balance");
             
-            // Add data rows
+            
             foreach (var customer in customers)
             {
                 csv.AppendLine($"{customer.Id},{customer.Name},{customer.Balance}");
             }
             
-            // Write to file
+            
             await File.WriteAllTextAsync(filePath, csv.ToString());
         }
 
@@ -400,16 +400,16 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             var trips = await _context.Fares.ToListAsync();
             var csv = new StringBuilder();
             
-            // Add header
+            
             csv.AppendLine("Id,CarId,CustomerId,Distance,Cost,From,To,FareStartDate");
             
-            // Add data rows
+            
             foreach (var trip in trips)
             {
                 csv.AppendLine($"{trip.Id},{trip.CarId},{trip.CustomerId},{trip.Distance},{trip.PaidAmount},\"{trip.From}\",\"{trip.To}\",{trip.FareStartDate}");
             }
             
-            // Write to file
+            
             await File.WriteAllTextAsync(filePath, csv.ToString());
         }
 

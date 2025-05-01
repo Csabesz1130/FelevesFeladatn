@@ -11,9 +11,9 @@ using BRK0Y5_HSZF_2024252.Persistence.MsSql;
 
 namespace BRK0Y5_HSZF_2024252.Application.Services
 {
-    /// <summary>
-    /// Service that imports TaxiCar/Fare data from JSON or XML files.
-    /// </summary>
+    
+    
+    
     public class DataImporterService : IDataImporterService
     {
         private readonly TaxiDbContext _context;
@@ -25,7 +25,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
         public async Task ImportDataAsync(string filePath)
         {
-            // Check file extension to determine format
+            
             var extension = Path.GetExtension(filePath).ToLower();
 
             if (extension == ".json")
@@ -44,11 +44,11 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
         private async Task ImportJsonDataAsync(string filePath)
         {
-            // 1) Load the JSON as text
+            
             var jsonData = await File.ReadAllTextAsync(filePath);
 
-            // 2) Deserialize it into a "wrapper" object or a list
-            //    Example: we expect an array of TaxiCarDto or some root object
+            
+            
             var carDtos = JsonSerializer.Deserialize<TaxiCarDto[]>(jsonData);
 
             if (carDtos == null || !carDtos.Any())
@@ -56,15 +56,15 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 throw new Exception("No data found or invalid JSON format.");
             }
 
-            // 3) Process each DTO, converting it to domain entities
+            
             foreach (var dto in carDtos)
             {
-                // Convert the Dto to a domain entity
+                
                 var existingCar = await _context.TaxiCars
                     .Include(tc => tc.Fares)
                     .FirstOrDefaultAsync(tc => tc.LicensePlate == dto.LicensePlate);
 
-                // Gather all fare-like entries (Fares + Services)
+                
                 var allFares = dto.GetAllFares()
                                   .Select(fd => new Fare
                                   {
@@ -73,13 +73,13 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                                       Distance = fd.Distance,
                                       PaidAmount = fd.PaidAmount,
                                       FareStartDate = fd.FareStartDate
-                                      // Possibly set more fields if needed
+                                      
                                   })
                                   .ToList();
 
                 if (existingCar != null)
                 {
-                    // Add only new fares
+                    
                     foreach (var fare in allFares)
                     {
                         bool alreadyExists = existingCar.Fares.Any(f => 
@@ -95,23 +95,23 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 }
                 else
                 {
-                    // Create a new TaxiCar
+                    
                     var newCar = new TaxiCar
                     {
                         LicensePlate = dto.LicensePlate,
                         Driver = dto.Driver,
-                        Model = "Unknown",  // Default value, not in JSON
-                        TotalDistance = 0,  // Initialize distance fields
+                        Model = "Unknown",  
+                        TotalDistance = 0,  
                         DistanceSinceLastMaintenance = 0
                     };
 
-                    // Attach fares
+                    
                     newCar.Fares = allFares;
                     await _context.TaxiCars.AddAsync(newCar);
                 }
             }
 
-            // 4) Save changes
+            
             await _context.SaveChangesAsync();
         }
 
@@ -119,16 +119,16 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         {
             try
             {
-                // Create serializer for CarSharingDto
+                
                 var serializer = new XmlSerializer(typeof(CarSharingDto));
                 
-                // Read the XML file
+                
                 using (var reader = new StreamReader(filePath))
                 {
-                    // Deserialize XML to CarSharingDto
+                    
                     var carSharing = (CarSharingDto)serializer.Deserialize(reader);
                     
-                    // Import cars
+                    
                     if (carSharing.Cars != null && carSharing.Cars.Items != null)
                     {
                         foreach (var car in carSharing.Cars.Items)
@@ -138,13 +138,13 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                                 
                             if (existingCar == null)
                             {
-                                // If LicensePlate not specified, generate one
+                                
                                 if (string.IsNullOrEmpty(car.LicensePlate))
                                 {
                                     car.LicensePlate = $"CAR-{car.Id}";
                                 }
                                 
-                                // If Driver not specified, generate one
+                                
                                 if (string.IsNullOrEmpty(car.Driver))
                                 {
                                     car.Driver = $"Driver-{car.Id}";
@@ -154,12 +154,12 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                             }
                             else
                             {
-                                // Update existing car
+                                
                                 existingCar.Model = car.Model;
                                 existingCar.TotalDistance = car.TotalDistance;
                                 existingCar.DistanceSinceLastMaintenance = car.DistanceSinceLastMaintenance;
                                 
-                                // Only update these if specified
+                                
                                 if (!string.IsNullOrEmpty(car.LicensePlate))
                                 {
                                     existingCar.LicensePlate = car.LicensePlate;
@@ -175,7 +175,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                         }
                     }
                     
-                    // Import customers
+                    
                     if (carSharing.Customers != null && carSharing.Customers.Items != null)
                     {
                         foreach (var customer in carSharing.Customers.Items)
@@ -196,7 +196,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                         }
                     }
                     
-                    // Import trips/fares
+                    
                     if (carSharing.Trips != null && carSharing.Trips.Items != null)
                     {
                         foreach (var trip in carSharing.Trips.Items)
@@ -219,7 +219,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                         }
                     }
                     
-                    // Save all changes
+                    
                     await _context.SaveChangesAsync();
                 }
             }

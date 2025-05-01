@@ -8,17 +8,17 @@ namespace BRK0Y5_HSZF_2024252.Model
     {
         public int Id { get; set; }
         
-        [XmlElement("n")] // Using 'n' tag from XML example
+        [XmlElement("n")] 
         public string Name { get; set; }
         
         [XmlElement("Balance")]
         public decimal Balance { get; set; }
 
-        // Navigation property
+        
         [XmlIgnore]
         public virtual ICollection<Fare> Fares { get; set; } = new List<Fare>();
 
-        // Sufficient funds check property (minimum 40€)
+        
         [XmlIgnore]
         public bool HasSufficientFunds => Balance >= 40m;
     }

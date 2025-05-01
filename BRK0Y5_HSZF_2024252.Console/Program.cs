@@ -1,4 +1,4 @@
-ï»¿using BRK0Y5_HSZF_2024252.Application.Interfaces;
+using BRK0Y5_HSZF_2024252.Application.Interfaces;
 using BRK0Y5_HSZF_2024252.Application.Services;
 using BRK0Y5_HSZF_2024252.Persistence.MsSql;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,29 +17,29 @@ class Program
         try
         {
             Console.WriteLine("Starting Car Sharing System...");
-            // Build a Host that includes configuration, logging, and DI (dependency injection).
+            
             var host = Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    // Load appsettings.json, if present
+                    
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                 })
                 .ConfigureLogging((hostingContext, logging) =>
                 {
-                    // Configure the logging system
+                    
                     logging.ClearProviders();
                     logging.AddConsole();
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    // Register the DbContext with SQLite, enabling lazy loading if you want
+                    
                     services.AddDbContext<TaxiDbContext>(options =>
                         options.UseSqlite("Data Source=CarSharing.db")
                                .UseLazyLoadingProxies()
                     );
 
-                    // Register application services
+                    
                     services.AddScoped<ICarManagementService, CarManagementService>();
                     services.AddScoped<IDataImporterService, DataImporterService>();
                     services.AddScoped<IStatisticsService, StatisticsService>();
@@ -47,14 +47,14 @@ class Program
                 .Build();
 
             Console.WriteLine("Applying database migrations...");
-            // Apply migrations on startup
+            
             using (var scope = host.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<TaxiDbContext>();
                 dbContext.Database.Migrate();
             }
 
-            // Run the main menu loop
+            
             await RunApplicationAsync(host.Services);
         }
         catch (Exception ex)
@@ -66,9 +66,9 @@ class Program
         }
     }
 
-    /// <summary>
-    /// The main menu / interactive loop that receives user input and calls the relevant services.
-    /// </summary>
+    
+    
+    
     static async Task RunApplicationAsync(IServiceProvider services)
     {
         try
@@ -77,7 +77,7 @@ class Program
             var carManager = services.GetRequiredService<ICarManagementService>();
             var statisticsService = services.GetRequiredService<IStatisticsService>();
             
-            // Register event handlers for car manager
+            
             if (carManager is CarManagementService carSharingService)
             {
                 carSharingService.TripStarted += OnTripStarted;
@@ -151,7 +151,7 @@ class Program
         Console.WriteLine($"Car: {e.CarModel} (ID: {e.CarId}, License: {e.LicensePlate})");
         Console.WriteLine($"Customer: {e.CustomerName} (ID: {e.CustomerId})");
         Console.WriteLine($"Estimated distance: {e.Distance:F2} km");
-        Console.WriteLine($"Estimated cost: {e.Cost:F2}â‚¬");
+        Console.WriteLine($"Estimated cost: {e.Cost:F2}€");
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
     }
@@ -162,7 +162,7 @@ class Program
         Console.WriteLine($"Car: {e.CarModel} (ID: {e.CarId}, License: {e.LicensePlate})");
         Console.WriteLine($"Customer: {e.CustomerName} (ID: {e.CustomerId})");
         Console.WriteLine($"Distance: {e.Distance:F2} km");
-        Console.WriteLine($"Cost: {e.Cost:F2}â‚¬");
+        Console.WriteLine($"Cost: {e.Cost:F2}€");
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
     }
@@ -180,17 +180,17 @@ class Program
     {
         Console.WriteLine($"\nInsufficient funds:");
         Console.WriteLine($"Customer: {e.CustomerName} (ID: {e.CustomerId})");
-        Console.WriteLine($"Current balance: {e.CurrentBalance:F2}â‚¬");
-        Console.WriteLine($"Minimum required: {e.MinimumBalance:F2}â‚¬");
+        Console.WriteLine($"Current balance: {e.CurrentBalance:F2}€");
+        Console.WriteLine($"Minimum required: {e.MinimumBalance:F2}€");
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
     }
     
     #endregion
 
-    /// <summary>
-    /// 1) Prompt for an XML file path, then call IDataImporterService to load data.
-    /// </summary>
+    
+    
+    
     static async Task ImportXmlAsync(IDataImporterService dataImporter)
     {
         Console.Write("Enter XML file path: ");
@@ -221,9 +221,9 @@ class Program
         }
     }
 
-    /// <summary>
-    /// Manage cars submenu.
-    /// </summary>
+    
+    
+    
     static async Task ManageCarsAsync(ICarManagementService carManager)
     {
         bool back = false;
@@ -269,9 +269,9 @@ class Program
         }
     }
 
-    /// <summary>
-    /// Manage customers submenu.
-    /// </summary>
+    
+    
+    
     static async Task ManageCustomersAsync(ICarManagementService carManager)
     {
         bool back = false;
@@ -313,9 +313,9 @@ class Program
         }
     }
 
-    /// <summary>
-    /// Trip operations submenu.
-    /// </summary>
+    
+    
+    
     static async Task TripOperationsAsync(ICarManagementService carManager)
     {
         bool back = false;
@@ -353,9 +353,9 @@ class Program
         }
     }
 
-    /// <summary>
-    /// View various statistics.
-    /// </summary>
+    
+    
+    
     static async Task ViewStatisticsAsync(IStatisticsService statisticsService, ICarManagementService carManager)
     {
         bool back = false;
@@ -399,9 +399,9 @@ class Program
         }
     }
 
-    /// <summary>
-    /// Export to CSV submenu.
-    /// </summary>
+    
+    
+    
     static async Task ExportToCSVAsync(ICarManagementService carManager)
     {
         bool back = false;
@@ -594,7 +594,7 @@ class Program
         }
         
         await carManager.PerformMaintenanceAsync(licensePlate);
-        // Event handler will show confirmation
+        
     }
     
     static async Task ListCustomersAsync(ICarManagementService carManager)
@@ -612,7 +612,7 @@ class Program
         {
             foreach (var customer in customers)
             {
-                Console.WriteLine($"ID: {customer.Id}, Name: {customer.Name}, Balance: {customer.Balance:F2}â‚¬");
+                Console.WriteLine($"ID: {customer.Id}, Name: {customer.Name}, Balance: {customer.Balance:F2}€");
             }
         }
         
@@ -628,7 +628,7 @@ class Program
         Console.Write("Enter name: ");
         var name = Console.ReadLine();
         
-        Console.Write("Enter initial balance (â‚¬): ");
+        Console.Write("Enter initial balance (€): ");
         if (!decimal.TryParse(Console.ReadLine(), out decimal balance))
         {
             Console.WriteLine("Invalid balance. Press any key to continue...");
@@ -677,7 +677,7 @@ class Program
             customer.Name = name;
         }
         
-        Console.Write($"Enter new balance (current: {customer.Balance:F2}â‚¬) or press Enter to keep current: ");
+        Console.Write($"Enter new balance (current: {customer.Balance:F2}€) or press Enter to keep current: ");
         var balanceStr = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(balanceStr) && decimal.TryParse(balanceStr, out decimal balance))
         {
@@ -728,7 +728,7 @@ class Program
     
     static async Task ListTripsAsync(ICarManagementService carManager)
     {
-        // For simplicity, we'll list all fares
+        
         var allCars = await carManager.GetCarsAsync();
         var allTrips = new List<Fare>();
         
@@ -751,7 +751,7 @@ class Program
                 var car = allCars.FirstOrDefault(c => c.Id == trip.CarId);
                 Console.WriteLine($"ID: {trip.Id}, Car: {car?.Model} (License: {car?.LicensePlate}), " +
                                 $"Customer ID: {trip.CustomerId}, Distance: {trip.Distance:F2} km, " +
-                                $"Cost: {trip.PaidAmount:F2}â‚¬, Date: {trip.FareStartDate}");
+                                $"Cost: {trip.PaidAmount:F2}€, Date: {trip.FareStartDate}");
             }
         }
         
@@ -764,7 +764,7 @@ class Program
         Console.Clear();
         Console.WriteLine("=== Start Trip ===");
         
-        // List available cars
+        
         Console.WriteLine("Available cars:");
         var cars = await carManager.GetCarsAsync();
         foreach (var car in cars)
@@ -773,15 +773,15 @@ class Program
                             $"Driver: {car.Driver}, Distance since maintenance: {car.DistanceSinceLastMaintenance:F2} km");
         }
         
-        // List customers
+        
         Console.WriteLine("\nCustomers:");
         var customers = await carManager.GetCustomersAsync();
         foreach (var customer in customers)
         {
-            Console.WriteLine($"ID: {customer.Id}, Name: {customer.Name}, Balance: {customer.Balance:F2}â‚¬");
+            Console.WriteLine($"ID: {customer.Id}, Name: {customer.Name}, Balance: {customer.Balance:F2}€");
         }
         
-        // Get input
+        
         Console.Write("\nEnter car license plate: ");
         var licensePlate = Console.ReadLine();
         
@@ -808,7 +808,7 @@ class Program
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
         }
-        // Event handler will show confirmation if successful
+        
     }
     
     static async Task FinishTripAsync(ICarManagementService carManager)
@@ -816,7 +816,7 @@ class Program
         Console.Clear();
         Console.WriteLine("=== Finish Trip ===");
         
-        // Get input
+        
         Console.Write("Enter car license plate: ");
         var licensePlate = Console.ReadLine();
         
@@ -837,7 +837,7 @@ class Program
         }
         
         await carManager.FinishTripAsync(licensePlate, customerId, distance);
-        // Event handler will show confirmation
+        
     }
     
     static async Task ShowMostUsedCarAsync(ICarManagementService carManager)

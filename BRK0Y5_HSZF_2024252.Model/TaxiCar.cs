@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
@@ -23,14 +23,14 @@ namespace BRK0Y5_HSZF_2024252.Model
         [XmlElement("DistanceSinceLastMaintenance")]
         public double DistanceSinceLastMaintenance { get; set; }
 
-        // Service date from original model
+        
         public DateTime LastServiceDate { get; set; } = DateTime.UtcNow;
 
-        // Navigation property: One car, many fares/trips
+        
         [XmlIgnore]
         public virtual ICollection<Fare> Fares { get; set; } = new List<Fare>();
 
-        // Maintenance check properties
+        
         [XmlIgnore]
         public bool NeedsMaintenance => DistanceSinceLastMaintenance >= 200;
         

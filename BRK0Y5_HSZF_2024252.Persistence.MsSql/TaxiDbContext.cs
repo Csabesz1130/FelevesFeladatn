@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using BRK0Y5_HSZF_2024252.Model;
 
 namespace BRK0Y5_HSZF_2024252.Persistence.MsSql
@@ -15,7 +15,7 @@ namespace BRK0Y5_HSZF_2024252.Persistence.MsSql
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // TaxiCar entity configuration
+            
             modelBuilder.Entity<TaxiCar>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -25,28 +25,28 @@ namespace BRK0Y5_HSZF_2024252.Persistence.MsSql
                 entity.Property(e => e.TotalDistance).IsRequired();
                 entity.Property(e => e.DistanceSinceLastMaintenance).IsRequired();
 
-                // One-to-Many: Car -> Fares
+                
                 entity.HasMany(e => e.Fares)
                       .WithOne(e => e.Car)
                       .HasForeignKey(e => e.CarId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Customer entity configuration
+            
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.Balance).IsRequired();
                 
-                // One-to-Many: Customer -> Fares
+                
                 entity.HasMany(e => e.Fares)
                       .WithOne(e => e.Customer)
                       .HasForeignKey(e => e.CustomerId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Fare/Trip entity configuration
+            
             modelBuilder.Entity<Fare>(entity =>
             {
                 entity.HasKey(e => e.Id);
