@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "BRK0Y5_HSZF_2024252.Model": {
+      "commandName": "Project"
+    },
+    "Profile 1": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\csaba\\FelevesFeladatn\\BRK0Y5_HSZF_2024252.Console\\Program.cs"
+    },
+    "Profile 2": {
+      "commandName": "Project"
+    }
+  }
+}
