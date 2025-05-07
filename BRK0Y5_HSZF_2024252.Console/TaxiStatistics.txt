@@ -1,0 +1,14 @@
+=== Taxi Statistics ===
+Report Date: 2025. 05. 07. 17:48:58
+
+Short Trips (Distance < 10km) per Car:
+  CAR-1: 0 short trip(s)
+  CAR-2: 0 short trip(s)
+  CAR-3: 0 short trip(s)
+
+Average Distance per Car:
+  CAR-1: 100,00 km
+  CAR-2: 150,00 km
+  CAR-3: 200,00 km
+
+Longest Fare:  -> , Distance=200 km, CarId=3

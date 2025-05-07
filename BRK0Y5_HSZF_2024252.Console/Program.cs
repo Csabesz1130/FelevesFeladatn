@@ -29,6 +29,7 @@ class Program
                     
                     logging.ClearProviders();
                     logging.AddConsole();
+                    logging.AddFilter("Microsoft.EntityFrameworkCore.Database", LogLevel.Warning);
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                 })
                 .ConfigureServices((context, services) =>

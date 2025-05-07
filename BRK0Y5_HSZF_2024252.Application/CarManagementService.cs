@@ -16,13 +16,11 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
     {
         private readonly TaxiDbContext _context;
         private readonly Random _random = new Random();
-        
-        
+
         public delegate void TripEventHandler(object sender, TripEventArgs e);
         public delegate void MaintenanceEventHandler(object sender, MaintenanceEventArgs e);
         public delegate void InsufficientFundsEventHandler(object sender, InsufficientFundsEventArgs e);
-        
-        
+
         public event TripEventHandler TripStarted;
         public event TripEventHandler TripFinished;
         public event MaintenanceEventHandler MaintenanceRequested;
@@ -74,7 +72,6 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             if (car == null)
                 throw new Exception($"Car not found: {licensePlate}");
 
-            
             if (fare.PaidAmount > 9999)
             {
                 notification?.Invoke($"Warning: a very expensive fare was added!");
@@ -82,12 +79,11 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
             car.Fares.Add(fare);
             await _context.SaveChangesAsync();
-            
-            
+
             car.TotalDistance += fare.Distance;
             car.DistanceSinceLastMaintenance += fare.Distance;
             await _context.SaveChangesAsync();
-            
+
             await CheckForMaintenanceAsync(car);
         }
 
@@ -124,16 +120,14 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
             var car = await GetCarByLicensePlateAsync(licensePlate);
             if (car != null)
             {
-                
                 car.DistanceSinceLastMaintenance = 0;
                 car.LastServiceDate = DateTime.UtcNow;
-                
+
                 _context.TaxiCars.Update(car);
                 await _context.SaveChangesAsync();
-                
-                
-                MaintenanceRequested?.Invoke(this, new MaintenanceEventArgs 
-                { 
+
+                MaintenanceRequested?.Invoke(this, new MaintenanceEventArgs
+                {
                     CarId = car.Id,
                     CarModel = car.Model,
                     LicensePlate = car.LicensePlate,
@@ -141,22 +135,21 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 });
             }
         }
-        
+
         private async Task CheckForMaintenanceAsync(TaxiCar car)
         {
             bool needsMaintenance = false;
-            
-            
+
             if (car.DistanceSinceLastMaintenance >= 200)
             {
                 needsMaintenance = true;
             }
-            
+
             else if (_random.Next(100) < 20)
             {
                 needsMaintenance = true;
             }
-            
+
             if (needsMaintenance)
             {
                 await PerformMaintenanceAsync(car.LicensePlate);
@@ -211,18 +204,14 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
         public async Task<bool> StartTripAsync(string licensePlate, int customerId, double estimatedDistance)
         {
-            
             var car = await GetCarByLicensePlateAsync(licensePlate);
             var customer = await GetCustomerByIdAsync(customerId);
-            
-            
+
             if (car == null || customer == null)
                 return false;
-            
-            
+
             if (customer.Balance < 40m)
             {
-                
                 InsufficientFunds?.Invoke(this, new InsufficientFundsEventArgs
                 {
                     CustomerId = customer.Id,
@@ -230,14 +219,12 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                     CurrentBalance = customer.Balance,
                     MinimumBalance = 40m
                 });
-                
+
                 return false;
             }
-            
-            
+
             decimal estimatedCost = Fare.CalculateCost(estimatedDistance);
-            
-            
+
             TripStarted?.Invoke(this, new TripEventArgs
             {
                 CarId = car.Id,
@@ -248,24 +235,20 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 Distance = estimatedDistance,
                 Cost = estimatedCost
             });
-            
+
             return true;
         }
 
         public async Task FinishTripAsync(string licensePlate, int customerId, double actualDistance)
         {
-            
             var car = await GetCarByLicensePlateAsync(licensePlate);
             var customer = await GetCustomerByIdAsync(customerId);
-            
-            
+
             if (car == null || customer == null)
                 return;
-            
-            
+
             decimal actualCost = Fare.CalculateCost(actualDistance);
-            
-            
+
             var fare = new Fare
             {
                 CarId = car.Id,
@@ -276,23 +259,18 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 To = "Trip End",
                 FareStartDate = DateTime.UtcNow
             };
-            
-            
+
             _context.Fares.Add(fare);
-            
-            
+
             customer.Balance -= actualCost;
             _context.Customers.Update(customer);
-            
-            
+
             car.TotalDistance += actualDistance;
             car.DistanceSinceLastMaintenance += actualDistance;
             _context.TaxiCars.Update(car);
-            
-            
+
             await _context.SaveChangesAsync();
-            
-            
+
             TripFinished?.Invoke(this, new TripEventArgs
             {
                 CarId = car.Id,
@@ -303,8 +281,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                 Distance = actualDistance,
                 Cost = actualCost
             });
-            
-            
+
             await CheckForMaintenanceAsync(car);
         }
 
@@ -321,19 +298,19 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
 
         public async Task<List<Customer>> GetTopPayingCustomersAsync(int count = 10)
         {
-            
-            var customerSpending = await _context.Fares
+            // Use AsEnumerable to move the grouping and aggregation to memory
+            var customerSpending = _context.Fares
+                .AsEnumerable()
                 .GroupBy(t => t.CustomerId)
-                .Select(g => new 
+                .Select(g => new
                 {
                     CustomerId = g.Key,
                     TotalSpent = g.Sum(t => t.PaidAmount)
                 })
                 .OrderByDescending(x => x.TotalSpent)
                 .Take(count)
-                .ToListAsync();
-            
-            
+                .ToList();
+
             var topCustomers = new List<Customer>();
             foreach (var spending in customerSpending)
             {
@@ -343,7 +320,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
                     topCustomers.Add(customer);
                 }
             }
-            
+
             return topCustomers;
         }
 
@@ -351,7 +328,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         {
             if (!await _context.TaxiCars.AnyAsync())
                 return 0;
-                
+
             return await _context.TaxiCars.AverageAsync(c => c.TotalDistance);
         }
 
@@ -363,17 +340,14 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         {
             var cars = await GetCarsAsync();
             var csv = new StringBuilder();
-            
-            
+
             csv.AppendLine("Id,LicensePlate,Model,Driver,TotalDistance,DistanceSinceLastMaintenance");
-            
-            
+
             foreach (var car in cars)
             {
                 csv.AppendLine($"{car.Id},{car.LicensePlate},{car.Model},{car.Driver},{car.TotalDistance},{car.DistanceSinceLastMaintenance}");
             }
-            
-            
+
             await File.WriteAllTextAsync(filePath, csv.ToString());
         }
 
@@ -381,17 +355,14 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         {
             var customers = await GetCustomersAsync();
             var csv = new StringBuilder();
-            
-            
+
             csv.AppendLine("Id,Name,Balance");
-            
-            
+
             foreach (var customer in customers)
             {
                 csv.AppendLine($"{customer.Id},{customer.Name},{customer.Balance}");
             }
-            
-            
+
             await File.WriteAllTextAsync(filePath, csv.ToString());
         }
 
@@ -399,17 +370,14 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         {
             var trips = await _context.Fares.ToListAsync();
             var csv = new StringBuilder();
-            
-            
+
             csv.AppendLine("Id,CarId,CustomerId,Distance,Cost,From,To,FareStartDate");
-            
-            
+
             foreach (var trip in trips)
             {
                 csv.AppendLine($"{trip.Id},{trip.CarId},{trip.CustomerId},{trip.Distance},{trip.PaidAmount},\"{trip.From}\",\"{trip.To}\",{trip.FareStartDate}");
             }
-            
-            
+
             await File.WriteAllTextAsync(filePath, csv.ToString());
         }
 
@@ -417,7 +385,7 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
     }
 
     #region Event Argument Classes
-    
+
     public class TripEventArgs : EventArgs
     {
         public int CarId { get; set; }
@@ -444,6 +412,6 @@ namespace BRK0Y5_HSZF_2024252.Application.Services
         public decimal CurrentBalance { get; set; }
         public decimal MinimumBalance { get; set; }
     }
-    
+
     #endregion
 }

@@ -3,6 +3,7 @@ using System;
 using BRK0Y5_HSZF_2024252.Persistence.MsSql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BRK0Y5_HSZF_2024252.Persistence.MsSql.Migrations
 {
     [DbContext(typeof(TaxiDbContext))]
-    partial class TaxiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507154342_AddMissingColumns")]
+    partial class AddMissingColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");

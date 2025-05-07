@@ -1,6 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BRK0Y5_HSZF_2024252.Application\BRK0Y5_HSZF_2024252.Application.csproj" />
     <ProjectReference Include="..\BRK0Y5_HSZF_2024252.Persistence.MsSql\BRK0Y5_HSZF_2024252.Persistence.MsSql.csproj" />
     <ProjectReference Include="..\BRK0Y5_HSZF_2024252.Model\BRK0Y5_HSZF_2024252.Model.csproj" />
